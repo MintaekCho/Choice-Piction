@@ -1,0 +1,186 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  username      String         @unique
+  password      String?
+  profileImage  String?
+  bio           String?
+  role          UserRole       @default(FREE)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  emailVerified DateTime?
+
+  accounts      Account[]
+  sessions      Session[]
+
+  stories       Story[]
+  characters    Character[]
+  reviews       Review[]
+  votes         Vote[]
+  subscription  Subscription?
+}
+
+model Character {
+  id            String    @id @default(cuid())
+  userId        String
+  name          String    @unique
+  gender        String
+  age           Int
+  profileImage  String?
+  appearance    String
+  personality   String
+  background    String
+  stats         String    // JSON 문자열로 저장될 stats 필드 추가
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user          User      @relation(fields: [userId], references: [id])
+  stories       Story[]   @relation("MainCharacter")
+
+  @@unique([userId, name])
+}
+
+model Story {
+  id              String    @id @default(cuid())
+  userId          String
+  title           String
+  description     String
+  genre           String[]
+  status          StoryStatus
+  viewCount       Int       @default(0)
+  likeCount       Int       @default(0)
+  mainCharacterId String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user            User      @relation(fields: [userId], references: [id])
+  mainCharacter   Character @relation("MainCharacter", fields: [mainCharacterId], references: [id])
+  chapters        Chapter[]
+  reviews         Review[]
+  votes           Vote[]
+}
+
+model Chapter {
+  id        String    @id @default(cuid())
+  storyId   String
+  title     String
+  content   String
+  sequence  Int
+  createdAt DateTime  @default(now())
+
+  story     Story     @relation(fields: [storyId], references: [id])
+  choices   Choice[]
+}
+
+model Choice {
+  id            String    @id @default(cuid())
+  chapterId     String
+  content       String
+  nextChapterId String?
+  votes         Int       @default(0)
+
+  chapter       Chapter   @relation(fields: [chapterId], references: [id])
+  voteHistory   Vote[]
+}
+
+model Vote {
+  id        String    @id @default(cuid())
+  userId    String
+  storyId   String
+  choiceId  String
+  createdAt DateTime  @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  story     Story     @relation(fields: [storyId], references: [id])
+  choice    Choice    @relation(fields: [choiceId], references: [id])
+}
+
+model Review {
+  id        String    @id @default(cuid())
+  userId    String
+  storyId   String
+  rating    Int
+  content   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id])
+  story     Story     @relation(fields: [storyId], references: [id])
+}
+
+model Subscription {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  plan          SubsPlan
+  status        SubsStatus
+  startDate     DateTime
+  endDate       DateTime
+
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum UserRole {
+  FREE
+  PREMIUM
+}
+
+enum StoryStatus {
+  DRAFT
+  ONGOING
+  COMPLETED
+}
+
+enum SubsPlan {
+  FREE
+  PREMIUM
+}
+
+enum SubsStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+} 
