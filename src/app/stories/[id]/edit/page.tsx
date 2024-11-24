@@ -3,9 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Save, X } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { BackButton } from '@/components/common/BackButton';
-import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
 interface Story {
@@ -30,7 +29,6 @@ export default function EditStoryPage() {
   const [story, setStory] = useState<Story | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const { data: session } = useSession();
   const router = useRouter();
   const params = useParams();
 

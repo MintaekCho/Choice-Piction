@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     );
 
     // 비밀번호를 제외한 사용자 정보 반환
-    const { password: _, ...userWithoutPassword } = user;
+    const { ...userWithoutPassword } = user;
 
     return NextResponse.json({
       user: userWithoutPassword,

@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Wand2, Sparkles, RefreshCw, ChevronRight } from 'lucide-react';
 import { BackButton } from '@/components/common/BackButton';
-import { Character, StoryPrompt } from '@/types';
+import { StoryPrompt } from '@/types';
 import { useStoryStore } from '@/store/storyStore';
 
 export default function WriteWithAIPage() {
@@ -13,7 +13,7 @@ export default function WriteWithAIPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [storyPrompts, setStoryPrompts] = useState<StoryPrompt[]>([]);
 
-  const { selectedCharacter, selectedGenre, setStoryPrompt, setCharacter, setGenre, reset } = useStoryStore();
+  const { selectedCharacter, selectedGenre, setStoryPrompt } = useStoryStore();
   console.log(selectedCharacter)
   useEffect(() => {
     if (selectedCharacter && selectedGenre) {

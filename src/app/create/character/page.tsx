@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { CharacterCreationForm } from '@/components/create/character/CharacterCreationForm';
 import { CharacterPreview } from '@/components/create/character/CharacterPreview';
 import { BackButton } from '@/components/common/BackButton';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Upload, X, Trash2 } from 'lucide-react';
+import { Upload, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { Modal } from '@/components/ui/Modal';
 

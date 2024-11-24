@@ -1,16 +1,16 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authConfig } from '@/lib/auth.config';
 
 export async function GET(
-  request: Request,
-  { params }: { params: { chapterId: string } }
+  request: NextRequest,
+  context: { params: { chapterId: string } }
 ) {
   try {
     // 챕터 조회 (스토리 정보 포함)
     const chapter = await prisma.chapter.findUnique({
-      where: { id: params.chapterId },
+      where: { id: context.params.chapterId },
       select: {
         id: true,
         title: true,
@@ -67,11 +67,11 @@ export async function GET(
 }
 
 export async function PATCH(
-  request: Request,
-  { params }: { params: { chapterId: string } }
+  request: NextRequest,
+  context: { params: { chapterId: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authConfig);
     if (!session?.user?.id) {
       return NextResponse.json({ error: '인증되지 않은 요청입니다.' }, { status: 401 });
     }
@@ -80,7 +80,7 @@ export async function PATCH(
 
     // 챕터 소유권 확인
     const chapter = await prisma.chapter.findUnique({
-      where: { id: params.chapterId },
+      where: { id: context.params.chapterId },
       include: {
         story: {
           select: {
@@ -100,7 +100,7 @@ export async function PATCH(
 
     // 챕터 업데이트
     const updatedChapter = await prisma.chapter.update({
-      where: { id: params.chapterId },
+      where: { id: context.params.chapterId },
       data: {
         title: data.title,
         content: data.content,
@@ -112,4 +112,4 @@ export async function PATCH(
     console.error('챕터 수정 에러:', error);
     return NextResponse.json({ error: '챕터 수정에 실패했습니다.' }, { status: 500 });
   }
-} 
+}

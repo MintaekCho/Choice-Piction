@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Wand2, Save, Send, Book, Sparkles, ScrollText, ChevronRight, User, X, Crown, MessageCircle, Zap } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Wand2, Save, Send, Book, Sparkles, User, Crown, MessageCircle, Zap, LucideIcon } from 'lucide-react';
 import { BackButton } from '@/components/common/BackButton';
 import { EditorState } from '@/types';
 import { useStoryStore } from '@/store/storyStore';
@@ -12,18 +12,10 @@ import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import { Modal } from '@/components/ui/Modal';
 
-interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  description: React.ReactNode;
-}
-
 
 export default function StoryEditorPage() {
-  const { selectedCharacter, selectedGenre, selectedStoryPrompt, chapterContext, setChapterContext, setCharacter, setGenre, setStoryPrompt } = useStoryStore();
+  const { selectedCharacter, selectedGenre, selectedStoryPrompt, chapterContext, setCharacter, setGenre, setStoryPrompt } = useStoryStore();
   const searchParams = useSearchParams();
-  const [isLoadingStory, setIsLoadingStory] = useState(false);
   const [editorState, setEditorState] = useState<EditorState>({
     character: selectedCharacter,
     genre: selectedGenre,
@@ -44,7 +36,6 @@ export default function StoryEditorPage() {
 
   // storyId로 스토리 정보 조회
   const fetchStoryInfo = async (storyId: string) => {
-    setIsLoadingStory(true);
     try {
       const response = await fetch(`/api/stories/${storyId}`);
       if (!response.ok) throw new Error('스토리 정보를 불러오는데 실패했습니다.');
@@ -72,14 +63,11 @@ export default function StoryEditorPage() {
 
     } catch (error) {
       console.error('스토리 정보 로딩 에러:', error);
-    } finally {
-      setIsLoadingStory(false);
     }
   };
 
   useEffect(() => {
     const storyId = searchParams?.get('storyId');
-    const chapterId = searchParams?.get('chapterId');
     const content = searchParams?.get('content');
     const sequence = searchParams?.get('sequence');
 
@@ -422,7 +410,7 @@ export default function StoryEditorPage() {
               {selectedCharacter?.stats && (
                 <div className="grid grid-cols-2 gap-3">
                   {Object.entries(selectedCharacter.stats).map(([stat, value]) => {
-                    const statConfig: { icon: any; color: string; label: string } = {
+                    const statConfig: { icon: LucideIcon; color: string; label: string } = {
                       appearance: { icon: User, color: 'pink', label: '외모' },
                       charisma: { icon: Crown, color: 'amber', label: '카리스마' },
                       speech: { icon: MessageCircle, color: 'blue', label: '말빨' },

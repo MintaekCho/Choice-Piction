@@ -54,7 +54,6 @@ export function CharacterCreationForm({ character, onUpdate, setInitialCharacter
   const { data: session } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [genre, setGenre] = useState<string>('');
   const [showSuccess, setShowSuccess] = useState(false);
   const [nameError, setNameError] = useState<string>('');
   const [isCheckingName, setIsCheckingName] = useState(false);
@@ -68,12 +67,8 @@ export function CharacterCreationForm({ character, onUpdate, setInitialCharacter
 
   useEffect(() => {
     // URL 파라미터에서 장르와 캐릭터 정보 가져오기
-    const genreParam = searchParams?.get('genre');
     const characterParam = searchParams?.get('character');
 
-    if (genreParam) {
-      setGenre(genreParam);
-    }
     if (characterParam) {
       try {
         onUpdate(JSON.parse(decodeURIComponent(characterParam)));
@@ -127,7 +122,6 @@ export function CharacterCreationForm({ character, onUpdate, setInitialCharacter
         throw new Error('캐릭터 생성에 실패했습니다.');
       }
 
-      const data = await response.json();
       setShowSuccess(true);
       
     } catch (error) {

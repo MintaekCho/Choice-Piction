@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Book, Star, Eye, Clock, ChevronRight, Pen, Sparkles } from 'lucide-react';
+import { Book, Star, Eye, Clock, ChevronRight, Pen, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
@@ -95,7 +95,7 @@ export default function StoriesPage() {
           ].map((filter) => (
             <button
               key={filter.id}
-              onClick={() => setActiveFilter(filter.id as any)}
+              onClick={() => setActiveFilter(filter.id as 'all' | 'ongoing' | 'completed')}
               className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 activeFilter === filter.id
                   ? 'bg-purple-500 text-white'

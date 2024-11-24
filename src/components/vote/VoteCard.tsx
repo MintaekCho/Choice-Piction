@@ -1,6 +1,3 @@
-interface VoteOption {
-  content: string;
-}
 
 interface VoteCardProps {
   vote: {

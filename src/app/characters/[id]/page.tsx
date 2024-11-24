@@ -6,6 +6,7 @@ import { User, Heart, Crown, MessageCircle, Sparkles, Zap, Book, Sword, Shield }
 import Image from 'next/image';
 import { BackButton } from '@/components/common/BackButton';
 import { CharacterModel } from '@/types';
+import { LucideIcon } from 'lucide-react';
 
 export default function CharacterDetailPage({ params }: { params: { id: string } }) {
   const [character, setCharacter] = useState<CharacterModel | null>(null);
@@ -169,7 +170,7 @@ export default function CharacterDetailPage({ params }: { params: { id: string }
               ].map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
+                  onClick={() => setActiveTab(tab.id as 'stats' | 'stories' | 'history')}
                   className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors relative ${
                     activeTab === tab.id ? 'text-white' : 'text-gray-400 hover:text-gray-300'
                   }`}
@@ -205,7 +206,7 @@ export default function CharacterDetailPage({ params }: { params: { id: string }
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
                             {(() => {
-                              const Icon = {
+                              const Icon: LucideIcon = {
                                 appearance: User,
                                 charisma: Crown,
                                 speech: MessageCircle,

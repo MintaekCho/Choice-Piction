@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Edit, Clock } from 'lucide-react';
 import { BackButton } from '@/components/common/BackButton';
 import { useSession } from 'next-auth/react';
-import { Modal } from '@/components/ui/Modal';
 import { useStoryStore } from '@/store/storyStore';
 
 interface Chapter {
@@ -41,7 +40,7 @@ export default function ChapterDetailPage() {
   const router = useRouter();
   const params = useParams();
   const isAuthor = session?.user?.id === story?.userId;
-  const { setChapterContext, setGenre, setStoryPrompt } = useStoryStore();
+  const { setChapterContext } = useStoryStore();
 
   const [navigation, setNavigation] = useState<{
     previousChapterId: string | null;

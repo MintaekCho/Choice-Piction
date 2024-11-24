@@ -10,13 +10,13 @@ interface ProvidersProps {
 }
 
 export default function ClientProvider({ children, session }: ProvidersProps) {
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setIsHydrated(true);
+    setMounted(true);
   }, []);
 
-  if (!isHydrated) {
+  if (!mounted) {
     return null;
   }
 

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { LucideIcon, X } from 'lucide-react';
 import { getMenuItems } from '@/constants/menu';
 import { useSession, signOut } from 'next-auth/react';
 import { Modal } from '@/components/ui/Modal';
@@ -13,11 +13,19 @@ interface MenuBarProps {
   onClose: () => void;
 }
 
+type MenuType = {
+  id: string;
+  label: string;
+  path: string;
+  icon: LucideIcon;
+  description: string;
+};
+
 export function MenuBar({ isOpen, onClose }: MenuBarProps) {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [menuItems, setMenuItems] = useState<Record<string, any>>({});
+  const [menuItems, setMenuItems] = useState<Record<string, MenuType[]>>({});
   const { data: session } = useSession();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -93,7 +101,7 @@ export function MenuBar({ isOpen, onClose }: MenuBarProps) {
                       <h3 className="text-xs font-semibold text-gray-400 uppercase">{section}</h3>
                     </div>
                     <div className="space-y-1">
-                      {items.map((item: any) => (
+                      {items.map((item: MenuType) => (
                         <button
                           key={item.id}
                           onClick={() => handleNavigation(item.path)}

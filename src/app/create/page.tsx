@@ -73,7 +73,7 @@ export default function CreatePage() {
   const [characters, setCharacters] = useState<CharacterModel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const { selectedCharacter, selectedGenre, setCharacter, setGenre, reset } = useStoryStore();
+  const { selectedCharacter, selectedGenre, setCharacter, setGenre } = useStoryStore();
   const genreSectionRef = useRef<HTMLElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
