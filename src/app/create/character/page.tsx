@@ -18,7 +18,7 @@ interface Character {
     speech: number;
     luck: number;
     wit: number;
-  };
+  } | string;
 }
 
 export default function CreateCharacterPage() {

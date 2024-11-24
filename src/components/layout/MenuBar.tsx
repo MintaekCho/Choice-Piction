@@ -93,10 +93,10 @@ export function MenuBar({ isOpen, onClose }: MenuBarProps) {
                       <h3 className="text-xs font-semibold text-gray-400 uppercase">{section}</h3>
                     </div>
                     <div className="space-y-1">
-                      {items.map((item) => (
+                      {items.map((item: any) => (
                         <button
                           key={item.id}
-                          onClick={() => handleNavigation(item.path, item.isLogout)}
+                          onClick={() => handleNavigation(item.path)}
                           className="w-full px-4 py-2 flex items-center gap-3 text-gray-300 hover:bg-gray-800/50 hover:text-white transition-colors"
                         >
                           <item.icon size={18} />

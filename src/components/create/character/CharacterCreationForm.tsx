@@ -87,6 +87,9 @@ export function CharacterCreationForm({ character, onUpdate, setInitialCharacter
     const otherStatsTotal = Object.entries(character.stats)
       .filter(([key]) => key !== stat)
       .reduce((sum, [_, val]) => sum + val, 0);
+    if(typeof character.stats === 'string') {
+      return;
+    }
 
     if (otherStatsTotal + value <= 100) {
       onUpdate({

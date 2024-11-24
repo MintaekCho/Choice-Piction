@@ -422,7 +422,7 @@ export default function StoryEditorPage() {
               {selectedCharacter?.stats && (
                 <div className="grid grid-cols-2 gap-3">
                   {Object.entries(selectedCharacter.stats).map(([stat, value]) => {
-                    const statConfig = {
+                    const statConfig: { icon: any; color: string; label: string } = {
                       appearance: { icon: User, color: 'pink', label: '외모' },
                       charisma: { icon: Crown, color: 'amber', label: '카리스마' },
                       speech: { icon: MessageCircle, color: 'blue', label: '말빨' },

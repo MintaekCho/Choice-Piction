@@ -16,7 +16,7 @@ interface CharacterPreviewProps {
       speech: number;
       luck: number;
       wit: number;
-    };
+    } | string;
     background?: string;
     personality?: string;
     appearance?: string;
@@ -39,7 +39,9 @@ export function CharacterPreview({ character }: CharacterPreviewProps) {
 
     return types[maxStat[0] as keyof typeof types];
   };
-
+  if(typeof character?.stats === 'string') {
+    return null;
+  }
   return (
     <motion.div
       className="bg-gray-800/30 backdrop-blur p-6 rounded-lg border border-purple-500/20"
