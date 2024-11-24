@@ -1,5 +1,6 @@
 // 캐릭터 관련 타입
 export interface Character {
+  id?: string;
   name: string;
   gender: string;
   age: number;
@@ -7,7 +8,7 @@ export interface Character {
   personality?: string;
   appearance?: string;
   background?: string;
-  stats: CharacterStats;
+  stats: CharacterStats | string;
 }
 
 // 캐릭터 능력치 타입
@@ -63,8 +64,8 @@ export interface ChapterContext {
     sequence: number;
   };
   previousChapter?: {
-    summary: string;
-    keyEvents: string[];
+    content: string;
+    sequence: number;
   };
   characterState: {
     name: string;
@@ -82,11 +83,14 @@ export interface ChapterContext {
 export interface EditorState {
   character: Character | null;
   genre: string;
+  title: string;
+  preview: string;
   content: string;
   suggestions: string[];
   isGenerating: boolean;
   selectedSuggestion: string | null;
   chapterContext: ChapterContext | null;
+  storyId?: string;
 }
 
 // 투표 관련 타입

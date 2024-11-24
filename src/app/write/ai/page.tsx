@@ -6,37 +6,26 @@ import { motion } from 'framer-motion';
 import { Wand2, Sparkles, RefreshCw, ChevronRight } from 'lucide-react';
 import { BackButton } from '@/components/common/BackButton';
 import { Character, StoryPrompt } from '@/types';
+import { useStoryStore } from '@/store/storyStore';
 
 export default function WriteWithAIPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [character, setCharacter] = useState<Character | null>(null);
-  const [genre, setGenre] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [storyPrompts, setStoryPrompts] = useState<StoryPrompt[]>([]);
 
+  const { selectedCharacter, selectedGenre, setStoryPrompt, setCharacter, setGenre, reset } = useStoryStore();
+  console.log(selectedCharacter)
   useEffect(() => {
-    const genreParam = searchParams?.get('genre');
-    const characterParam = searchParams?.get('character');
-
-    if (genreParam) setGenre(genreParam);
-    if (characterParam) {
-      try {
-        setCharacter(JSON.parse(decodeURIComponent(characterParam)));
-      } catch (e) {
-        console.error('캐릭터 정보 파싱 실패:', e);
-      }
-    }
-
-  }, []);
-
-  useEffect(() => {
-    if (character && genre) {
+    if (selectedCharacter && selectedGenre) {
       generateStoryPrompts();
-    }
-  }, [character, genre]);
+    } 
+  }, [selectedCharacter, selectedGenre]);
 
   const generateStoryPrompts = useCallback(async () => {
+    if (!selectedCharacter || !selectedGenre) {
+      router.push('/create');
+      return;
+    }
     setIsLoading(true);
     try {
       const response = await fetch('/api/ai/generate-prompts', {
@@ -45,8 +34,8 @@ export default function WriteWithAIPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          character,
-          genre,
+          character: selectedCharacter,
+          genre: selectedGenre,
         }),
       });
 
@@ -61,24 +50,12 @@ export default function WriteWithAIPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [character, genre]);
+  }, [selectedCharacter, selectedGenre]);
 
-  const getHighestStat = () => {
-    if (!character?.stats) return '';
-    const maxStat = Object.entries(character.stats).reduce((a, b) => b[1] > a[1] ? b : a);
-    const statNames = {
-      strength: '힘',
-      intelligence: '지능',
-      charm: '매력',
-      empathy: '공감능력',
-      luck: '운'
-    };
-    return statNames[maxStat[0] as keyof typeof statNames];
-  };
 
   const handlePromptSelect = (prompt: StoryPrompt) => {
-    // TODO: 선택한 프롬프트로 스토리 시작
-    router.push(`/write/editor?prompt=${encodeURIComponent(JSON.stringify(prompt))}&character=${encodeURIComponent(JSON.stringify(character))}&genre=${genre}`);
+    setStoryPrompt(prompt);
+    router.push(`/write/editor`);
   };
 
   return (

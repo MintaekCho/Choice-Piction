@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { Character } from '@/types';
 
 interface CharacterStore {
@@ -25,9 +26,29 @@ const initialCharacter: Character = {
   }
 };
 
-export const useCharacterStore = create<CharacterStore>((set) => ({
-  character: initialCharacter,
-  setCharacter: (character) => set({ character }),
-  setInitialCharacter: () => set({ character: initialCharacter }),
-  resetCharacter: () => set({ character: initialCharacter })
-})); 
+export const useCharacterStore = create<CharacterStore>()(
+  persist(
+    (set) => ({
+      character: initialCharacter,
+      setCharacter: (character) => set({ character }),
+      setInitialCharacter: () => set({ character: initialCharacter }),
+      resetCharacter: () => set({ character: initialCharacter })
+    }),
+    {
+      name: 'character-storage',
+      storage: createJSONStorage(() => {
+        if (typeof window !== 'undefined') {
+          return window.localStorage;
+        }
+        return {
+          getItem: () => null,
+          setItem: () => null,
+          removeItem: () => null,
+        };
+      }),
+      partialize: (state) => ({
+        character: state.character,
+      }),
+    }
+  )
+); 
