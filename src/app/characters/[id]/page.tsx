@@ -8,7 +8,7 @@ import { BackButton } from '@/components/common/BackButton';
 import { CharacterModel } from '@/types';
 import { LucideIcon } from 'lucide-react';
 
-export default function CharacterDetailPage({ params }: { params: { id: string } }) {
+export default function CharacterDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const [character, setCharacter] = useState<CharacterModel | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'stats' | 'stories' | 'history'>('stats');
@@ -19,7 +19,7 @@ export default function CharacterDetailPage({ params }: { params: { id: string }
 
   const fetchCharacter = async () => {
     try {
-      const response = await fetch(`/api/characters/${params.id}`);
+      const response = await fetch(`/api/characters/${(await params).id}`);
       if (!response.ok) throw new Error('캐릭터 정보를 불러오는데 실패했습니다.');
       const data = await response.json();
       setCharacter(data);

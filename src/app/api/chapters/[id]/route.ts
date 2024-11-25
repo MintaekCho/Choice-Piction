@@ -5,12 +5,12 @@ import { authConfig } from '@/lib/auth.config';
 
 export async function GET(
   request: NextRequest,
-  context: { params: { chapterId: string } }
+  {params}: {params: Promise<{id: string}>}
 ) {
   try {
     // 챕터 조회 (스토리 정보 포함)
     const chapter = await prisma.chapter.findUnique({
-      where: { id: context.params.chapterId },
+      where: { id: (await params).id },
       select: {
         id: true,
         title: true,
@@ -68,7 +68,7 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  context: { params: { chapterId: string } }
+  {params}: {params: Promise<{id: string}>}
 ) {
   try {
     const session = await getServerSession(authConfig);
@@ -80,7 +80,7 @@ export async function PATCH(
 
     // 챕터 소유권 확인
     const chapter = await prisma.chapter.findUnique({
-      where: { id: context.params.chapterId },
+      where: { id: (await params).id },
       include: {
         story: {
           select: {
@@ -100,7 +100,7 @@ export async function PATCH(
 
     // 챕터 업데이트
     const updatedChapter = await prisma.chapter.update({
-      where: { id: context.params.chapterId },
+      where: { id: (await params).id },
       data: {
         title: data.title,
         content: data.content,

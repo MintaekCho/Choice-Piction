@@ -5,11 +5,11 @@ import { authConfig } from '@/lib/auth.config';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const story = await prisma.story.findUnique({
-      where: { id: params.id },
+      where: { id: (await params).id },
       include: {
         mainCharacter: {
           select: {
@@ -45,7 +45,7 @@ export async function GET(
     };
 
     await prisma.story.update({
-      where: { id: params.id },
+      where: { id: (await params).id },
       data: { viewCount: { increment: 1 } },
     });
 
@@ -58,7 +58,7 @@ export async function GET(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authConfig);
@@ -69,7 +69,7 @@ export async function DELETE(
     // 스토리 소유권 확인
     const story = await prisma.story.findUnique({
       where: {
-        id: params.id,
+        id: (await params).id,
         userId: session.user.id,
       },
     });
@@ -81,23 +81,23 @@ export async function DELETE(
     // 스토리와 관련된 모든 데이터 삭제
     await prisma.$transaction([
       prisma.vote.deleteMany({
-        where: { storyId: params.id },
+        where: { storyId: (await params).id },
       }),
       prisma.review.deleteMany({
-        where: { storyId: params.id },
+        where: { storyId: (await params).id },
       }),
       prisma.choice.deleteMany({
         where: {
           chapter: {
-            storyId: params.id,
+            storyId: (await params).id,
           },
         },
       }),
       prisma.chapter.deleteMany({
-        where: { storyId: params.id },
+        where: { storyId: (await params).id },
       }),
       prisma.story.delete({
-        where: { id: params.id },
+        where: { id: (await params).id },
       }),
     ]);
 
@@ -110,7 +110,7 @@ export async function DELETE(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authConfig);
@@ -123,7 +123,7 @@ export async function PATCH(
     // 스토리 소유권 확인
     const story = await prisma.story.findUnique({
       where: {
-        id: params.id,
+        id: (await params).id,
         userId: session.user.id,
       },
     });
@@ -134,7 +134,7 @@ export async function PATCH(
 
     // 스토리 업데이트
     const updatedStory = await prisma.story.update({
-      where: { id: params.id },
+      where: { id: (await params).id },
       data: {
         title: data.title,
         description: data.description,
